@@ -73,9 +73,39 @@ class ViewController: UIViewController, UIDropInteractionDelegate ,UIDragInterac
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = .white
+        navigationItem.title = "Sunny Collage Sharing"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Share", style: .plain, target: self, action: #selector(handleShare))
+        
         view.addInteraction(UIDropInteraction(delegate: self))
         view.addInteraction(UIDragInteraction(delegate: self))
        
+    }
+    
+    
+   @objc func handleShare()  {
+    
+        print("Share image")
+    
+        UIGraphicsBeginImageContext(view.frame.size)
+        view.layer.render(in: UIGraphicsGetCurrentContext()!)
+    
+    // image of viewframe
+    guard let image = UIGraphicsGetImageFromCurrentImageContext() else {return}
+    
+    UIGraphicsEndImageContext()
+    
+    // obj shared
+    let activityViewController = UIActivityViewController(activityItems: [image,"Sharing this nice image"], applicationActivities: nil)
+    
+    // shared button
+    activityViewController.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+    //shared
+    present(activityViewController, animated: true,completion: nil)
+    
+    
+    
+    
     }
     
     
@@ -101,7 +131,9 @@ class ViewController: UIViewController, UIDropInteractionDelegate ,UIDragInterac
                      let imageView = UIImageView(image: draggedImage)
                     
                     imageView.isUserInteractionEnabled = true
-                    
+                    imageView.layer.borderColor = UIColor.black.cgColor  // สีขอบเป็นสีดำ
+                    imageView.layer.shadowRadius = 5 // เงาขอบ
+                    imageView.layer.shadowOpacity = 0.3 // ความเข้มของเงาขอบ
                     
   //                  เพื่มภาพใน layer
                     self.view.addSubview(imageView)
