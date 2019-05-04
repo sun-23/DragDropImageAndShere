@@ -19,9 +19,12 @@ class ViewController: UIViewController, UIDropInteractionDelegate ,UIDragInterac
     func dragInteraction(_ interaction: UIDragInteraction, itemsForBeginning session: UIDragSession) -> [UIDragItem] {
         
         
+//        จุดที่แตะ
         let touchPoint = session.location(in: self.view)
         if let touchImageView = self.view.hitTest(touchPoint, with: nil) as? UIImageView {
             
+            
+            // ภาพที่แตะ
             let touchImage = touchImageView.image
             print(touchImage)
             
@@ -45,6 +48,7 @@ class ViewController: UIViewController, UIDropInteractionDelegate ,UIDragInterac
         session.items.forEach { (dragItem) in
             if let touchedImageView = dragItem.localObject as? UIView {
                 
+//                ถ้าภาพถูกเคลื่นที่ ภาพเก่าที่จุดเดิมจะถูกลบ
                 touchedImageView.removeFromSuperview()
                 
             }
@@ -52,11 +56,15 @@ class ViewController: UIViewController, UIDropInteractionDelegate ,UIDragInterac
     }
     
     func dragInteraction(_ interaction: UIDragInteraction, item: UIDragItem, willAnimateCancelWith animator: UIDragAnimating) {
+        
+//        เพิ่มภาพที่ถูกลากเปลี่ยนตำแหน่งใหม่ใร view
         self.view.addSubview(item.localObject as! UIView)
     }
     
     
     func dragInteraction(_ interaction: UIDragInteraction, previewForLifting item: UIDragItem, session: UIDragSession) -> UITargetedDragPreview? {
+        
+        // ถ้าภาพถูกลากออกไปจากขอบของแอพจะกลับมาที่เดิม
         return UITargetedDragPreview(view: item.localObject as! UIView)
     }
     
@@ -83,6 +91,7 @@ class ViewController: UIViewController, UIDropInteractionDelegate ,UIDragInterac
                     return
                 }
                 
+      // guard ป้องกัน ไม่ให้ program error ถ้า draggedImage ไม่ใช่ UIImage
                 guard let draggedImage = obj as? UIImage else { return }
                 
               
@@ -93,12 +102,15 @@ class ViewController: UIViewController, UIDropInteractionDelegate ,UIDragInterac
                     
                     imageView.isUserInteractionEnabled = true
                     
+                    
+  //                  เพื่มภาพใน layer
                     self.view.addSubview(imageView)
                     
                     
-                    
+//                    กำหนดขนาด
                     imageView.frame = CGRect(x: 0, y: 0, width: draggedImage.size.width, height: draggedImage.size.height)
                     
+//                    จุดที่วางรูปให้เป็นตรงกลางนิ้ว
                 let centerPoint = session.location(in: self.view)
                     imageView.center = centerPoint
                     
@@ -113,7 +125,7 @@ class ViewController: UIViewController, UIDropInteractionDelegate ,UIDragInterac
     }
     
     func dropInteraction(_ interaction: UIDropInteraction, sessionDidUpdate session: UIDropSession) -> UIDropProposal {
-        return UIDropProposal(operation: .copy)
+        return UIDropProposal(operation: .copy) // copyภาพที่ลากมาในแอพ
     }
     
     func dropInteraction(_ interaction: UIDropInteraction, canHandle session: UIDropSession) -> Bool {
